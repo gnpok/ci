@@ -5,6 +5,7 @@ $CI = &get_instance();
 if (!function_exists('get')) {
     /**
      * get获取值
+     *
      * @param        $name
      * @param string $func
      *
@@ -30,6 +31,7 @@ if (!function_exists('post')) {
 if (!function_exists('view')) {
     /**
      * 加载视图
+     *
      * @param       $template
      * @param array $data
      *
@@ -43,9 +45,28 @@ if (!function_exists('view')) {
     }
 }
 
+if (!function_exists('parse')) {
+    /**
+     * 模版解析类
+     * @param       $template
+     * @param array $data
+     * @param bool  $return FALSE将内容输出到页面，TRUE将内容返回不进行输出
+     *
+     * @return mixed
+     */
+    function parse( $template, $data = [], $return = FALSE )
+    {
+        global $CI;
+        $CI->load->library('parser');
+
+        return $CI->parser->parse($template, $data, $return);
+    }
+}
+
 if (!function_exists('loadmodel')) {
     /**
      * 加载数据库模型
+     *
      * @param        $model
      * @param string $alias
      *
