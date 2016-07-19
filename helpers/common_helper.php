@@ -2,6 +2,7 @@
 
 $CI = &get_instance();
 
+/*-------B 获取INPUT---------*/
 if (!function_exists('get')) {
     /**
      * get获取值
@@ -15,7 +16,8 @@ if (!function_exists('get')) {
     {
         global $CI;
 
-        return empty($func) ? $CI->input->get($name) : $CI->input->get($name, $func);
+        $get = empty($func) ? $CI->input->get($name) : $CI->input->get($name, $func);
+        return xss_clean($get);
     }
 }
 
@@ -24,10 +26,14 @@ if (!function_exists('post')) {
     {
         global $CI;
 
-        return empty($func) ? $CI->input->post($name) : $CI->input->post($name, $func);
+        $post = empty($func) ? $CI->input->post($name) : $CI->input->post($name, $func);
+        return xss_clean($post);
     }
 }
 
+/*-------E 获取INPUT---------*/
+
+/*-------B 加载器方法--------*/
 if (!function_exists('view')) {
     /**
      * 加载视图
@@ -54,7 +60,7 @@ if (!function_exists('parse')) {
      *
      * @return mixed
      */
-    function parse( $template, $data = [], $return = FALSE )
+    function parse( $template, $data = array(), $return = FALSE )
     {
         global $CI;
         $CI->load->library('parser');
@@ -106,3 +112,28 @@ if (!function_exists('loadconfig')) {
         return $CI->load->config($config);
     }
 }
+
+/*-------E 加载器方法--------*/
+
+
+/*-------B 安全过滤方法------*/
+if(!function_exists('xss_clean'))
+{
+    function xss_clean($value)
+    {
+        global $CI;
+
+        return is_array($value) ? array_map('xss_clean', $value) : $CI->security->xss_clean($value);
+    }
+}
+
+if(!function_exists('_html'))
+{
+    function _html($value)
+    {
+        global $CI;
+
+        return is_array($value) ? array_map('_html', $value) : htmlspecialchars($value);
+    }
+}
+/*-------B 安全过滤方法------*/
